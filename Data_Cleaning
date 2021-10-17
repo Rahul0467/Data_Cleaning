@@ -1,0 +1,31 @@
+-- Cleaning data using SQL queries
+
+SELECT *
+FROM data;
+
+-- Standarize Date Format
+
+select saledate
+from data;
+
+alter table data
+add SaleDateConverted date;
+
+update data
+set SaleDateConverted = cast(SaleDate as date);
+
+alter table data
+drop column SaleDate;
+
+-- Breaking address into individual columns (address, city, state)
+
+select PropertyAddress
+from data;
+
+select
+substring_index(PropertyAddress, ',', 1) as address, 
+substring_index(PropertyAddress, ',', -1) as city
+from data;
+
+alter table data
+add Adress varchar(100);
