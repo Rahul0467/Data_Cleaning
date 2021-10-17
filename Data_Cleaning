@@ -28,4 +28,16 @@ substring_index(PropertyAddress, ',', -1) as city
 from data;
 
 alter table data
-add Adress varchar(100);
+add SplitAddress varchar(1000);
+
+alter table data
+add SplitCity varchar(1000);
+
+update data
+set SplitAddress = substring_index(PropertyAddress, ',', 1);
+
+update data
+set SplitCity = substring_index(PropertyAddress, ',', -1);
+
+alter table data
+drop column PropertyAddress;
