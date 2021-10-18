@@ -41,3 +41,63 @@ set SplitCity = substring_index(PropertyAddress, ',', -1);
 
 alter table data
 drop column PropertyAddress;
+
+select owneraddress
+from data;
+
+alter table data
+add SplitOwnerAddress varchar(1000);
+
+
+alter table data
+add SplitOwnerCity varchar(1000);
+
+
+alter table data
+add SplitOwnerState varchar(1000);
+
+update data
+set SplitOwnerCity = substring_index(substring_index(OwnerAddress, ',', 2), ',', -1);
+
+
+update data
+set SplitOwnerState = substring_index(OwnerAddress, ',', -1);
+
+update data
+set SplitOwnerAddress = substring_index(OwnerAddress, ',', 1);
+
+alter table data
+drop column OwnerAddress;
+
+alter table data
+change SplitAddress SplitPropertAddress varchar(1000); 
+
+alter table data
+change SplitCity SplitPropertyCity varchar(1000);
+
+-- Change Y and N to Yes and No in SoldAsVacant field
+
+select distinct(SoldAsVacant), count(SoldAsVacant)
+from data
+group by SoldAsVacant
+order by count(SoldAsVacant);
+
+select SoldAsVacant
+,case 	when SoldAsVacant = 'Y' then 'Yes'
+		when SoldAsVacant = 'N' then 'No'
+else	SoldAsVacant
+end as ChangedSoldAsVacant
+from data;
+
+update data
+set SoldAsVacant = 
+case 	when SoldAsVacant = 'Y' then 'Yes'
+		when SoldAsVacant = 'N' then 'No'
+else	SoldAsVacant
+end;
+
+alter table data
+drop column ChangedSoldAsVacant;
+
+-- Remove Duplicates
+
