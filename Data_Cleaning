@@ -101,3 +101,32 @@ drop column ChangedSoldAsVacant;
 
 -- Remove Duplicates
 
+
+select * from(
+select parcelid, saleprice, LegalReference, saledateconverted, splitpropertaddress, splitpropertycity,
+row_number() over (partition by parcelid, saleprice, LegalReference, saledateconverted, splitpropertaddress, splitpropertycity 
+order by parcelid) as row_num
+from data) a
+where row_num > 1;
+
+create table data_cleaning(
+parcelid text,
+saleprice bigint,
+legalreference text,
+saledateconverted date,
+splitpropertaddress varchar(1000),
+splitpropertycity varchar(1000),
+row_num int);
+
+
+insert into data_cleaning(
+select parcelid, saleprice, LegalReference, saledateconverted, splitpropertaddress, splitpropertycity,
+row_number() over (partition by parcelid, saleprice, LegalReference, saledateconverted, splitpropertaddress, splitpropertycity 
+order by parcelid) as row_num
+from data);
+
+select *
+FROM data
+join data_cleaning
+	on data.ParcelID = data_cleaning.ParcelID
+where data_cleaning.row_num > 1;
