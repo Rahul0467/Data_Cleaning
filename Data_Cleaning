@@ -130,3 +130,24 @@ FROM data
 join data_cleaning
 	on data.ParcelID = data_cleaning.ParcelID
 where data_cleaning.row_num > 1;
+
+drop table data_cleaning;
+
+-- Populate Property Address Data
+
+select *
+from data 
+order by parcelid;
+
+select a.ParcelID, a.SplitPropertAddress, b.parcelid, b.SplitPropertAddress, ifnull(a.Splitpropertaddress, b.splitpropertaddress)
+from data a
+join data b
+	on a.parcelid = b.parcelid
+    and a.uniqueid <> b.uniqueid
+where a.SplitPropertAddress is null;
+    
+update data a
+join data b
+	on a.parcelid = b.parcelid
+set a.splitpropertaddress = ifnull(a.splitpropertaddress, b.splitpropertaddress)
+where a.splitpropertaddress is null;
