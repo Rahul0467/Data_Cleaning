@@ -151,3 +151,9 @@ join data b
 	on a.parcelid = b.parcelid
 set a.splitpropertaddress = ifnull(a.splitpropertaddress, b.splitpropertaddress)
 where a.splitpropertaddress is null;
+
+
+-- Delete Unused Columns
+
+alter table data
+drop column TaxDistrict;
